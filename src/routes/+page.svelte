@@ -1,2 +1,27 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+  import Main from "./main-todo.svelte";
+  import Todos from "./list-todo.svelte";
+  let todo = "";
+  function add(event) {
+    todo = event.detail.message;
+  }
+</script>
+
+<div class="main-container">
+  <Main on:addtodo={add} />
+  <Todos bind:todo />
+</div>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  .main-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: calc(100vh - 16px);
+  }
+</style>
