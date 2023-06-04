@@ -14,7 +14,6 @@
 
 <style>
   @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
-
   * {
     font-family: Lato;
     margin: 0;
@@ -26,5 +25,10 @@
     flex-direction: row;
     align-items: center;
     height: calc(100vh - 16px);
+  }
+  @media (max-width: 699px) {
+    .main-container {
+      flex-direction: column;
+    }
   }
 </style>

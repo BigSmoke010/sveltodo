@@ -67,4 +67,14 @@
     justify-content: center;
     position: relative;
   }
+  @media (max-width: 699px) {
+    .seperator {
+      width: 100vw;
+      height: 5px;
+      bottom: 0;
+    }
+    .main-container {
+      width: 100vw;
+    }
+  }
 </style>

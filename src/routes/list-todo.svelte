@@ -3,6 +3,7 @@
   import { flip } from "svelte/animate";
   import { quintOut } from "svelte/easing";
   import { crossfade } from "svelte/transition";
+  import Trash from "./trash-can.svg";
   const [send, receive] = crossfade({
     duration: (d) => Math.sqrt(d * 200),
 
@@ -38,49 +39,71 @@
     item.done = done;
     testlist = testlist.filter((t) => t !== item);
     testlist = testlist.concat(item);
+    testlist = reorganizeUIDs(testlist);
     todos.set(testlist);
+  }
+  function deletetodo(item) {
+    console.log(item);
+    testlist = testlist.filter((t) => t !== item);
+    testlist = reorganizeUIDs(testlist);
+    todos.set(testlist);
+  }
+  function reorganizeUIDs(array) {
+    return array.map((item, index) => ({
+      ...item,
+      id: index + 1,
+    }));
   }
 </script>
 
-<div class="main-container">
-  <div class="label">things to do</div>
-  {#if testlist}
-    {#each testlist.filter((t) => !t.done) as item (item.id)}
-      <div
-        class="todo-container"
-        in:receive={{ key: todo.id }}
-        out:send={{ key: todo.id }}
-        animate:flip
-      >
-        <input
-          type="checkbox"
-          class="checkbox"
-          on:change={() => mark(item, true)}
-        />
-        <div>{item.description}</div>
-      </div>
-    {/each}
-  {/if}
-</div>
-<div class="main-container">
-  <div class="label">things done</div>
-  {#if testlist}
-    {#each testlist.filter((t) => t.done) as item (item.id)}
-      <div
-        class="todo-container"
-        in:receive={{ key: todo.id }}
-        out:send={{ key: todo.id }}
-      >
-        <input
-          type="checkbox"
-          checked
-          class="checkbox"
-          on:change={() => mark(item, false)}
-        />
-        <div>{item.description}</div>
-      </div>
-    {/each}
-  {/if}
+<div class="container">
+  <div class="main-container">
+    <div class="label">things to do</div>
+    {#if testlist}
+      {#each testlist.filter((t) => !t.done) as item (item.id)}
+        <div
+          class="todo-container"
+          in:receive={{ key: todo.id }}
+          out:send={{ key: todo.id }}
+          animate:flip
+        >
+          <input
+            type="checkbox"
+            class="checkbox"
+            on:change={() => mark(item, true)}
+          />
+          <div class="todo-desc">{item.description}</div>
+          <div class="trash-wrapper" on:click={() => deletetodo(item)}>
+            <img src={Trash} alt="dots" />
+          </div>
+        </div>
+      {/each}
+    {/if}
+  </div>
+  <div class="main-container">
+    <div class="label">things done</div>
+    {#if testlist}
+      {#each testlist.filter((t) => t.done) as item (item.id)}
+        <div
+          class="todo-container"
+          in:receive={{ key: todo.id }}
+          out:send={{ key: todo.id }}
+          animate:flip
+        >
+          <input
+            type="checkbox"
+            checked
+            class="checkbox"
+            on:change={() => mark(item, false)}
+          />
+          <div class="todo-desc">{item.description}</div>
+          <div class="trash-wrapper" on:click={() => deletetodo(item)}>
+            <img src={Trash} alt="dots" />
+          </div>
+        </div>
+      {/each}
+    {/if}
+  </div>
 </div>
 
 <style>
@@ -103,9 +126,12 @@
     border-radius: 12px;
   }
   .label {
-    position: absolute;
+    position: sticky;
     top: 0;
     font-size: 25px;
+  }
+  .todo-desc {
+    width: 100%;
   }
   .checkbox {
     transition: all 1s;
@@ -142,6 +168,17 @@
     left: 0;
     animation: uncheck 0.5s ease forwards;
   }
+  .container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
+  .trash-wrapper {
+    margin: 10px;
+  }
+  .trash-wrapper:hover {
+    cursor: pointer;
+  }
   @keyframes check {
     0% {
       transform: translate(-20%, 10%);
@@ -157,6 +194,16 @@
     }
     100% {
       opacity: 0;
+    }
+  }
+  @media (max-width: 1148px) {
+    .container {
+      flex-direction: column;
+    }
+  }
+  @media (min-width: 1148px) {
+    .container {
+      flex-direction: row;
     }
   }
 </style>
