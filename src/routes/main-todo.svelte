@@ -19,10 +19,6 @@
 </div>
 
 <style>
-  @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
-  * {
-    font-family: Lato;
-  }
   .title {
     font-size: 50px;
     position: absolute;
