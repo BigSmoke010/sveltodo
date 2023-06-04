@@ -16,6 +16,7 @@
     class="container-input"
   />
   <button on:click={addtodo} class="container-button">Submit</button>
+  <div class="seperator" />
 </div>
 
 <style>
@@ -28,6 +29,13 @@
     width: 200px;
     height: 25px;
     font-size: 17px;
+  }
+  .seperator {
+    height: 100vh;
+    width: 5px;
+    background-color: black;
+    position: absolute;
+    right: 0;
   }
   .container-button {
     transition: all 0.5s;
@@ -54,9 +62,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-right: black solid 2px;
     height: 100%;
     flex-grow: 1;
     justify-content: center;
+    position: relative;
   }
 </style>
