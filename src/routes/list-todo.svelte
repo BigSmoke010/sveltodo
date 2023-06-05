@@ -43,7 +43,6 @@
     todos.set(testlist);
   }
   function deletetodo(item) {
-    console.log(item);
     testlist = testlist.filter((t) => t !== item);
     testlist = reorganizeUIDs(testlist);
     todos.set(testlist);
@@ -204,6 +203,11 @@
   @media (min-width: 1148px) {
     .container {
       flex-direction: row;
+    }
+  }
+  @media (max-width: 699px) {
+    .todo-container {
+      width: 100vw;
     }
   }
 </style>
