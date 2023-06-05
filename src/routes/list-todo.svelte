@@ -1,11 +1,11 @@
 <script>
-  import { getStoreValue, todos } from "./stores";
+  import { getStoreValue, todos, id, finalId } from "./stores";
   import { flip } from "svelte/animate";
   import { quintOut } from "svelte/easing";
   import { crossfade } from "svelte/transition";
   import Trash from "./trash-can.svg";
   const [send, receive] = crossfade({
-    duration: (d) => Math.sqrt(d * 200),
+    duration: 600,
 
     fallback(node, params) {
       const style = getComputedStyle(node);
@@ -24,7 +24,8 @@
   export let todo = "";
   let previousValue = "";
   let testlist = getStoreValue;
-  let uid = testlist.length + 1;
+  let uid = id;
+
   $: {
     if (todo !== previousValue) {
       addDiv();
@@ -32,26 +33,26 @@
     }
   }
   function addDiv() {
-    testlist = [...testlist, { id: uid++, done: false, description: todo }];
+    testlist = [
+      ...testlist,
+      {
+        id: uid++,
+        done: false,
+        description: todo,
+      },
+    ];
     todos.set(testlist);
+    finalId.set(uid);
   }
   function mark(item, done) {
     item.done = done;
     testlist = testlist.filter((t) => t !== item);
     testlist = testlist.concat(item);
-    testlist = reorganizeUIDs(testlist);
     todos.set(testlist);
   }
   function deletetodo(item) {
     testlist = testlist.filter((t) => t !== item);
-    testlist = reorganizeUIDs(testlist);
     todos.set(testlist);
-  }
-  function reorganizeUIDs(array) {
-    return array.map((item, index) => ({
-      ...item,
-      id: index + 1,
-    }));
   }
 </script>
 
@@ -203,11 +204,6 @@
   @media (min-width: 1148px) {
     .container {
       flex-direction: row;
-    }
-  }
-  @media (max-width: 699px) {
-    .todo-container {
-      width: 100vw;
     }
   }
 </style>
