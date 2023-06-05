@@ -206,4 +206,9 @@
       flex-direction: row;
     }
   }
+  @media (max-width: 699px) {
+    .todo-container {
+      width: 100vw;
+    }
+  }
 </style>
