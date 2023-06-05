@@ -96,7 +96,7 @@
             class="checkbox"
             on:change={() => mark(item, false)}
           />
-          <div class="todo-desc">{item.description}</div>
+          <div class="todo-desc done">{item.description}</div>
           <div class="trash-wrapper" on:click={() => deletetodo(item)}>
             <img src={Trash} alt="dots" />
           </div>
@@ -129,6 +129,12 @@
     position: sticky;
     top: 0;
     font-size: 25px;
+  }
+  .done {
+    text-decoration: line-through;
+    opacity: 0.5;
+    text-decoration-color: rgb(88, 88, 0);
+    text-decoration-thickness: 2px;
   }
   .todo-desc {
     width: 100%;
