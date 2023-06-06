@@ -127,13 +127,36 @@
 </div>
 
 <style>
+  /* width */
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: black;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 20px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
   .main-container {
     flex-grow: 1;
-    width: 460px;
+    width: 500px;
     display: flex;
+    height: 100vh;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
   .todo-container {
     display: flex;
@@ -146,8 +169,6 @@
     border-radius: 12px;
   }
   .label {
-    position: sticky;
-    top: 0;
     font-size: 25px;
   }
   .done {
@@ -259,6 +280,9 @@
   @media (max-width: 699px) {
     .todo-container {
       width: 100vw;
+    }
+    .main-container {
+      height: auto;
     }
   }
 </style>

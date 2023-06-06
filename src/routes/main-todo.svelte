@@ -51,13 +51,14 @@
 <style>
   .title {
     font-size: 50px;
-    position: sticky;
-    top: 0px;
   }
   .container-input {
     width: 200px;
     height: 25px;
     font-size: 17px;
+  }
+  :global(body) {
+    transition: all 1s;
   }
   :global(body.dark-mode) {
     transition: all 1s;
@@ -118,6 +119,7 @@
       width: 100vw;
       height: 5px;
       bottom: 0;
+      left: 0;
     }
     .main-container {
       width: 100vw;

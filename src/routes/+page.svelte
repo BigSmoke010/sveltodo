@@ -27,9 +27,13 @@
     align-items: center;
     height: calc(100vh - 16px);
   }
+  :global(body) {
+    overflow: hidden;
+  }
   @media (max-width: 699px) {
     .main-container {
       flex-direction: column;
+      width: 100vw;
     }
   }
 </style>
