@@ -149,13 +149,13 @@
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: #888;
+    background: #bcd100;
     border-radius: 20px;
   }
 
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: #9fb10055;
   }
   .main-container {
     flex-grow: 1;
