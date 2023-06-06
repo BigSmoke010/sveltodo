@@ -1,34 +1,63 @@
 <script>
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
+  import { theme, themeStore } from "./stores";
+
   let dispatch = createEventDispatcher();
   export let todo = "";
   function addtodo() {
     dispatch("addtodo", { message: todo });
   }
+  function changetheme() {
+    theme.set(!$theme);
+    themeStore.set($theme);
+    console.log($theme);
+    window.document.body.classList.toggle("dark-mode");
+  }
 </script>
 
 <div class="main-container">
-  <h1 class="title">Todo</h1>
-  <h1 class="greet">Hello</h1>
+  <h1
+    class="title"
+    class:lightfc={$themeStore === true}
+    class:darkfc={$themeStore === false}
+  >
+    Todo
+  </h1>
+  <button on:click={changetheme}>{$themeStore ? "Light" : "Dark"}</button>
+  <h1
+    class:lightfc={$themeStore === true}
+    class:darkfc={$themeStore === false}
+    class="greet"
+  >
+    Hello
+  </h1>
   <input
     bind:value={todo}
     placeholder="what do you want to do"
     class="container-input"
   />
   <button on:click={addtodo} class="container-button">Submit</button>
-  <div class="seperator" />
+  <div
+    class="seperator"
+    class:lightsep={$themeStore === true}
+    class:darksep={$themeStore === false}
+  />
 </div>
 
 <style>
   .title {
     font-size: 50px;
-    position: absolute;
+    position: sticky;
     top: 0px;
   }
   .container-input {
     width: 200px;
     height: 25px;
     font-size: 17px;
+  }
+  :global(body.dark-mode) {
+    transition: all 1s;
+    background-color: black;
   }
   .seperator {
     height: 100vh;
@@ -67,6 +96,18 @@
     justify-content: center;
     position: relative;
   }
+  .lightfc {
+    color: black;
+  }
+  .darkfc {
+    color: white;
+  }
+  .lightsep {
+    background-color: black;
+  }
+  .darksep {
+    background-color: white;
+  }
   @media (max-width: 699px) {
     .seperator {
       width: 100vw;
@@ -75,7 +116,6 @@
     }
     .main-container {
       width: 100vw;
-      height: 200px;
     }
   }
 </style>

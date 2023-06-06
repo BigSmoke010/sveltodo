@@ -1,5 +1,5 @@
 <script>
-  import { getStoreValue, todos, id, finalId } from "./stores";
+  import { getStoreValue, todos, id, finalId, themeStore } from "./stores";
   import { flip } from "svelte/animate";
   import { quintOut } from "svelte/easing";
   import { crossfade } from "svelte/transition";
@@ -58,10 +58,18 @@
 
 <div class="container">
   <div class="main-container">
-    <div class="label">things to do</div>
+    <div
+      class="label"
+      class:lightfc={$themeStore === true}
+      class:darkfc={$themeStore === false}
+    >
+      things to do
+    </div>
     {#if testlist}
       {#each testlist.filter((t) => !t.done) as item (item.id)}
         <div
+          class:light={$themeStore === true}
+          class:dark={$themeStore === false}
           class="todo-container"
           in:receive={{ key: todo.id }}
           out:send={{ key: todo.id }}
@@ -70,6 +78,8 @@
           <input
             type="checkbox"
             class="checkbox"
+            class:checkboxlight={$themeStore === true}
+            class:checkboxdark={$themeStore === false}
             on:change={() => mark(item, true)}
           />
           <div class="todo-desc">{item.description}</div>
@@ -81,10 +91,18 @@
     {/if}
   </div>
   <div class="main-container">
-    <div class="label">things done</div>
+    <div
+      class="label"
+      class:lightfc={$themeStore === true}
+      class:darkfc={$themeStore === false}
+    >
+      things done
+    </div>
     {#if testlist}
       {#each testlist.filter((t) => t.done) as item (item.id)}
         <div
+          class:light={$themeStore === true}
+          class:dark={$themeStore === false}
           class="todo-container"
           in:receive={{ key: todo.id }}
           out:send={{ key: todo.id }}
@@ -95,6 +113,8 @@
             checked
             class="checkbox"
             on:change={() => mark(item, false)}
+            class:checkboxlight={$themeStore === true}
+            class:checkboxdark={$themeStore === false}
           />
           <div class="todo-desc done">{item.description}</div>
           <div class="trash-wrapper" on:click={() => deletetodo(item)}>
@@ -139,6 +159,24 @@
   .todo-desc {
     width: 100%;
   }
+  .light {
+    background-color: white;
+    border-color: black;
+    color: black;
+    transition: all 1s;
+  }
+  .dark {
+    background-color: black;
+    border-color: white;
+    color: white;
+    transition: all 1s;
+  }
+  .lightfc {
+    color: black;
+  }
+  .darkfc {
+    color: white;
+  }
   .checkbox {
     transition: all 1s;
     position: relative;
@@ -173,6 +211,12 @@
     top: -4px;
     left: 0;
     animation: uncheck 0.5s ease forwards;
+  }
+  .checkboxdark {
+    border-color: white;
+  }
+  .checkboxlight {
+    border-color: black;
   }
   .container {
     display: flex;

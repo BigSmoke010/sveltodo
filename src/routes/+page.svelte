@@ -1,12 +1,14 @@
 <script>
   import Main from "./main-todo.svelte";
   import Todos from "./list-todo.svelte";
+  import { themeStore } from "./stores";
   let todo = "";
   function add(event) {
     todo = event.detail.message;
   }
 </script>
 
+<title>Sveltodo</title>
 <div class="main-container">
   <Main on:addtodo={add} />
   <Todos bind:todo />
