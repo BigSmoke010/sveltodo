@@ -84,7 +84,12 @@
           />
           <div class="todo-desc">{item.description}</div>
           <div class="trash-wrapper" on:click={() => deletetodo(item)}>
-            <img src={Trash} alt="dots" />
+            <img
+              class:lighttrash={$themeStore === true}
+              class:darktrash={$themeStore === false}
+              src={Trash}
+              alt="dots"
+            />
           </div>
         </div>
       {/each}
@@ -118,7 +123,12 @@
           />
           <div class="todo-desc done">{item.description}</div>
           <div class="trash-wrapper" on:click={() => deletetodo(item)}>
-            <img src={Trash} alt="dots" />
+            <img
+              src={Trash}
+              alt="dots"
+              class:lighttrash={$themeStore === true}
+              class:darktrash={$themeStore === false}
+            />
           </div>
         </div>
       {/each}
@@ -197,6 +207,12 @@
   }
   .darkfc {
     color: white;
+  }
+  .darktrash {
+    filter: invert();
+  }
+  .lighttrash {
+    filter: none;
   }
   .checkbox {
     transition: all 1s;
