@@ -1,7 +1,6 @@
 <script>
   import Main from "./main-todo.svelte";
   import Todos from "./list-todo.svelte";
-  import { themeStore } from "./stores";
   let todo = "";
   function add(event) {
     todo = event.detail.message;

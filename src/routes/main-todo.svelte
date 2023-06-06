@@ -7,10 +7,14 @@
   function addtodo() {
     dispatch("addtodo", { message: todo });
   }
+  onMount(() => {
+    if (!$theme) {
+      window.document.body.classList.toggle("dark-mode");
+    }
+  });
   function changetheme() {
     theme.set(!$theme);
     themeStore.set($theme);
-    console.log($theme);
     window.document.body.classList.toggle("dark-mode");
   }
 </script>
@@ -69,6 +73,7 @@
   .container-button {
     transition: all 0.5s;
     margin-top: 20px;
+    margin-bottom: 20px;
     width: 100px;
     height: 40px;
     border-radius: 5px;
