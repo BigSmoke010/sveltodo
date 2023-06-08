@@ -2,8 +2,10 @@
   import { getStoreValue, todos, id, finalId, themeStore } from "./stores";
   import { flip } from "svelte/animate";
   import { quintOut } from "svelte/easing";
-  import { crossfade } from "svelte/transition";
+  import { crossfade, slide } from "svelte/transition";
   import Trash from "./trash-can.svg";
+  import Dots from "./three-dots-svgrepo-com.svg";
+
   const [send, receive] = crossfade({
     duration: 600,
 
@@ -21,10 +23,15 @@
       };
     },
   });
+
   export let todo = "";
   let previousValue = "";
-  let testlist = getStoreValue;
+  let todolist = getStoreValue;
   let uid = id;
+  let showContext = false;
+  let x;
+  let y;
+  let selectedItem;
 
   $: {
     if (todo !== previousValue) {
@@ -33,26 +40,42 @@
     }
   }
   function addDiv() {
-    testlist = [
-      ...testlist,
+    todolist = [
+      ...todolist,
       {
         id: uid++,
         done: false,
         description: todo,
       },
     ];
-    todos.set(testlist);
+    todos.set(todolist);
     finalId.set(uid);
   }
   function mark(item, done) {
     item.done = done;
-    testlist = testlist.filter((t) => t !== item);
-    testlist = testlist.concat(item);
-    todos.set(testlist);
+    todolist = todolist.filter((t) => t !== item);
+    todolist = todolist.concat(item);
+    todos.set(todolist);
   }
   function deletetodo(item) {
-    testlist = testlist.filter((t) => t !== item);
-    todos.set(testlist);
+    console.log(item);
+    todolist = todolist.filter((t) => t !== item);
+    todos.set(todolist);
+  }
+  function showContextMenu(event, item) {
+    showContext = true;
+    x = event.clientX + "px";
+    y = event.clientY + "px";
+    console.log(x);
+    console.log(Math.floor(getwidth() * 0.5));
+    if (event.clientX > getwidth() - 80) {
+      x = getwidth() - 80 + "px";
+    }
+
+    selectedItem = item;
+  }
+  function getwidth() {
+    return document.documentElement.clientWidth;
   }
 </script>
 
@@ -65,8 +88,8 @@
     >
       things to do
     </div>
-    {#if testlist}
-      {#each testlist.filter((t) => !t.done) as item (item.id)}
+    {#if todolist}
+      {#each todolist.filter((t) => !t.done) as item (item.id)}
         <div
           class:light={$themeStore === true}
           class:dark={$themeStore === false}
@@ -83,12 +106,17 @@
             on:change={() => mark(item, true)}
           />
           <div class="todo-desc">{item.description}</div>
-          <div class="trash-wrapper" on:click={() => deletetodo(item)}>
+          <div
+            class="dots-container"
+            on:click={() => {
+              showContextMenu(event, item);
+            }}
+          >
             <img
-              class:lighttrash={$themeStore === true}
-              class:darktrash={$themeStore === false}
-              src={Trash}
-              alt="dots"
+              src={Dots}
+              alt="more options"
+              class:lightsvg={$themeStore === true}
+              class:darksvg={$themeStore === false}
             />
           </div>
         </div>
@@ -103,8 +131,8 @@
     >
       things done
     </div>
-    {#if testlist}
-      {#each testlist.filter((t) => t.done) as item (item.id)}
+    {#if todolist}
+      {#each todolist.filter((t) => t.done) as item (item.id)}
         <div
           class:light={$themeStore === true}
           class:dark={$themeStore === false}
@@ -122,12 +150,17 @@
             class:checkboxdark={$themeStore === false}
           />
           <div class="todo-desc done">{item.description}</div>
-          <div class="trash-wrapper" on:click={() => deletetodo(item)}>
+          <div
+            class="dots-container"
+            on:click={() => {
+              showContextMenu(event, item);
+            }}
+          >
             <img
-              src={Trash}
-              alt="dots"
-              class:lighttrash={$themeStore === true}
-              class:darktrash={$themeStore === false}
+              src={Dots}
+              alt="more options"
+              class:lightsvg={$themeStore === true}
+              class:darksvg={$themeStore === false}
             />
           </div>
         </div>
@@ -135,6 +168,25 @@
     {/if}
   </div>
 </div>
+{#if showContext}
+  <div
+    class="context-menu"
+    transition:slide
+    on:click={() => {
+      showContext = false;
+    }}
+    style="position: absolute; left : {x}; top : {y}"
+  >
+    <button class="context-it" on:click={() => deletetodo(selectedItem)}
+      ><img
+        class:lightsvg={$themeStore === true}
+        class:darksvg={$themeStore === false}
+        src={Trash}
+        alt="trash"
+      />Delete</button
+    >
+  </div>
+{/if}
 
 <style>
   /* width */
@@ -178,6 +230,37 @@
     width: 460px;
     border-radius: 12px;
   }
+  .context-menu {
+    background-color: rgb(234, 243, 157);
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    border-radius: 10px;
+    align-items: center;
+    width: 80px;
+    right: 0;
+  }
+  .context-it {
+    transition: all 0.25s;
+    background-color: transparent;
+    border: none;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+  }
+  .context-it:hover {
+    background-color: rgba(124, 124, 0, 0.664);
+  }
+  .dots-container {
+    transition: all 0.2s;
+    margin: 5px;
+    border-radius: 5px;
+  }
+  .dots-container:hover {
+    background-color: rgba(0, 0, 0, 0.411);
+  }
+
   .label {
     font-size: 25px;
   }
@@ -208,10 +291,10 @@
   .darkfc {
     color: white;
   }
-  .darktrash {
+  .darksvg {
     filter: invert();
   }
-  .lighttrash {
+  .lightsvg {
     filter: none;
   }
   .checkbox {
@@ -259,12 +342,6 @@
     display: flex;
     flex-direction: row;
     gap: 10px;
-  }
-  .trash-wrapper {
-    margin: 10px;
-  }
-  .trash-wrapper:hover {
-    cursor: pointer;
   }
   @keyframes check {
     0% {
