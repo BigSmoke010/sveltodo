@@ -27,6 +27,25 @@
   >
     Todo
   </h1>
+  <div class="auth-container">
+    <div
+      class="auth-btn"
+      on:click={() => {
+        dispatch("showauthentication", { message: true });
+      }}
+    >
+      Log in
+    </div>
+    |
+    <div
+      class="auth-btn"
+      on:click={() => {
+        dispatch("showauthentication", { message: false });
+      }}
+    >
+      Sign up
+    </div>
+  </div>
   <i class:lightfc={$themeStore === true} class:darkfc={$themeStore === false}
     >Dark mode:</i
   >
@@ -150,6 +169,18 @@
     background-position: left;
     background-size: 200%;
     border: none;
+  }
+  .auth-container {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  .auth-btn {
+    text-decoration: underline;
+    color: rgb(209, 209, 75);
+  }
+  .auth-btn:hover {
+    cursor: pointer;
+    color: rgba(209, 209, 75, 0.5);
   }
   .container-button:hover {
     background-position: right;

@@ -5,6 +5,7 @@
   import { crossfade, slide } from "svelte/transition";
   import Trash from "./trash-can.svg";
   import Dots from "./three-dots-svgrepo-com.svg";
+  import { clickOutside } from "./clickoutside";
 
   const [send, receive] = crossfade({
     duration: 600,
@@ -175,6 +176,9 @@
     on:click={() => {
       showContext = false;
     }}
+    use:clickOutside={() => {
+      showContext = false;
+    }}
     style="position: absolute; left : {x}; top : {y}"
   >
     <button class="context-it" on:click={() => deletetodo(selectedItem)}
@@ -319,18 +323,11 @@
   .checkbox:checked::before {
     content: url("checkmark.svg");
     position: absolute;
-    opacity: 0;
     top: -4px;
     left: 0;
-    animation: check 0.5s ease forwards;
   }
   .checkbox:not(:checked)::before {
-    content: url("checkmark.svg");
-    position: absolute;
-    opacity: 0;
-    top: -4px;
-    left: 0;
-    animation: uncheck 0.5s ease forwards;
+    content: "";
   }
   .checkboxdark {
     border-color: white;
@@ -342,23 +339,6 @@
     display: flex;
     flex-direction: row;
     gap: 10px;
-  }
-  @keyframes check {
-    0% {
-      transform: translate(-20%, 10%);
-    }
-    100% {
-      transform: translate(0, 0);
-      opacity: 1;
-    }
-  }
-  @keyframes uncheck {
-    0% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
   }
   @media (max-width: 1148px) {
     .container {
