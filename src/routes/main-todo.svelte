@@ -1,8 +1,16 @@
 <script>
   import { createEventDispatcher, onMount } from "svelte";
   import { theme, themeStore } from "./stores";
+  import { getAuth, signOut } from "firebase/auth";
 
+  const auth = getAuth();
   let dispatch = createEventDispatcher();
+  let loggedIn = false;
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      loggedIn = true;
+    }
+  });
   export let todo = "";
   function addtodo() {
     dispatch("addtodo", { message: todo });
@@ -27,25 +35,37 @@
   >
     Todo
   </h1>
-  <div class="auth-container">
+  {#if !loggedIn}
+    <div class="auth-container">
+      <div
+        class="auth-btn"
+        on:click={() => {
+          dispatch("showauthentication", { message: true });
+        }}
+      >
+        Log in
+      </div>
+      |
+      <div
+        class="auth-btn"
+        on:click={() => {
+          dispatch("showauthentication", { message: false });
+        }}
+      >
+        Sign up
+      </div>
+    </div>
+  {:else}
     <div
       class="auth-btn"
       on:click={() => {
-        dispatch("showauthentication", { message: true });
+        signOut(auth);
+        location.reload(true);
       }}
     >
-      Log in
+      Sign Out
     </div>
-    |
-    <div
-      class="auth-btn"
-      on:click={() => {
-        dispatch("showauthentication", { message: false });
-      }}
-    >
-      Sign up
-    </div>
-  </div>
+  {/if}
   <i class:lightfc={$themeStore === true} class:darkfc={$themeStore === false}
     >Dark mode:</i
   >

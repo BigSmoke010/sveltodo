@@ -6,6 +6,30 @@
   import Trash from "./trash-can.svg";
   import Dots from "./three-dots-svgrepo-com.svg";
   import { clickOutside } from "./clickoutside";
+  import {
+    getFirestore,
+    collection,
+    getDocs,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+    query,
+    where,
+  } from "firebase/firestore";
+  import { getAuth } from "firebase/auth";
+  let todolist;
+  const db = getFirestore();
+  const collectionRef = collection(db, "todos");
+  const auth = getAuth();
+  let userUID;
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      userUID = user.uid;
+      fetchTodos(user);
+    } else {
+      todolist = getStoreValue;
+    }
+  });
 
   const [send, receive] = crossfade({
     duration: 600,
@@ -27,7 +51,6 @@
 
   export let todo = "";
   let previousValue = "";
-  let todolist = getStoreValue;
   let uid = id;
   let showContext = false;
   let x;
@@ -36,10 +59,44 @@
 
   $: {
     if (todo !== previousValue) {
-      addDiv();
-      previousValue = todo;
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          addDivdb();
+          previousValue = todo;
+        } else {
+          addDiv();
+          previousValue = todo;
+        }
+      });
     }
   }
+  function addDivdb() {
+    addDoc(collectionRef, {
+      userid: userUID,
+      id: uid++,
+      done: false,
+      description: todo,
+    })
+      .then(() => {
+        finalId.set(uid);
+        fetchTodos();
+      })
+      .catch((error) => {
+        console.error("Error adding document:", error);
+      });
+  }
+  function fetchTodos() {
+    const q = query(collectionRef, where("userid", "==", userUID));
+    getDocs(q)
+      .then((querySnapshot) => {
+        const documentsData = querySnapshot.docs.map((doc) => doc.data());
+        todolist = documentsData;
+      })
+      .catch((error) => {
+        console.log("Error getting documents:", error);
+      });
+  }
+
   function addDiv() {
     todolist = [
       ...todolist,
@@ -58,17 +115,61 @@
     todolist = todolist.concat(item);
     todos.set(todolist);
   }
+  function markdb(item, done) {
+    const q = query(
+      collectionRef,
+      where("description", "==", item.description)
+    );
+    getDocs(q)
+      .then((querySnapshot) => {
+        // Iterate through the documents and update the field
+        querySnapshot.forEach((doc) => {
+          updateDoc(doc.ref, { ["done"]: done })
+            .then(() => {
+              console.log("Document successfully updated!");
+              fetchTodos();
+            })
+            .catch((error) => {
+              console.error("Error updating document: ", error);
+            });
+        });
+      })
+      .catch((error) => {
+        console.log("Error getting documents:", error);
+      });
+  }
   function deletetodo(item) {
-    console.log(item);
     todolist = todolist.filter((t) => t !== item);
     todos.set(todolist);
   }
+  function deletetododb(item) {
+    const q = query(
+      collectionRef,
+      where("userid", "==", userUID),
+      where("description", "==", item.description)
+    );
+    getDocs(q)
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          deleteDoc(doc.ref)
+            .then(() => {
+              console.log("Document successfully deleted.");
+              fetchTodos();
+            })
+            .catch((error) => {
+              console.error("Error deleting document: ", error);
+            });
+        });
+      })
+      .catch((error) => {
+        console.log("Error getting documents:", error);
+      });
+  }
+
   function showContextMenu(event, item) {
     showContext = true;
     x = event.clientX + "px";
     y = event.clientY + "px";
-    console.log(x);
-    console.log(Math.floor(getwidth() * 0.5));
     if (event.clientX > getwidth() - 80) {
       x = getwidth() - 80 + "px";
     }
@@ -99,13 +200,21 @@
           out:send={{ key: todo.id }}
           animate:flip
         >
-          <input
-            type="checkbox"
-            class="checkbox"
-            class:checkboxlight={$themeStore === true}
-            class:checkboxdark={$themeStore === false}
-            on:change={() => mark(item, true)}
-          />
+          {#if userUID}
+            <input
+              type="checkbox"
+              class="checkbox"
+              class:checkboxlight={$themeStore === true}
+              class:checkboxdark={$themeStore === false}
+              on:change={() => markdb(item, true)}
+            />
+          {:else}<input
+              type="checkbox"
+              class="checkbox"
+              class:checkboxlight={$themeStore === true}
+              class:checkboxdark={$themeStore === false}
+              on:change={() => mark(item, true)}
+            />{/if}
           <div class="todo-desc">{item.description}</div>
           <div
             class="dots-container"
@@ -181,14 +290,23 @@
     }}
     style="position: absolute; left : {x}; top : {y}"
   >
-    <button class="context-it" on:click={() => deletetodo(selectedItem)}
-      ><img
-        class:lightsvg={$themeStore === true}
-        class:darksvg={$themeStore === false}
-        src={Trash}
-        alt="trash"
-      />Delete</button
-    >
+    {#if userUID}
+      <button class="context-it" on:click={() => deletetododb(selectedItem)}
+        ><img
+          class:lightsvg={$themeStore === true}
+          class:darksvg={$themeStore === false}
+          src={Trash}
+          alt="trash"
+        />Delete</button
+      >{:else}
+      <button class="context-it" on:click={() => deletetodo(selectedItem)}
+        ><img
+          class:lightsvg={$themeStore === true}
+          class:darksvg={$themeStore === false}
+          src={Trash}
+          alt="trash"
+        />Delete</button
+      >{/if}
   </div>
 {/if}
 

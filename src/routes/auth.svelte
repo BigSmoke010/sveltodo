@@ -1,10 +1,46 @@
 <script>
-  import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+  } from "firebase/auth";
   import { createEventDispatcher } from "svelte";
   import { fly } from "svelte/transition";
   import { clickOutside } from "./clickoutside";
-  let dispatch = createEventDispatcher();
   export let login;
+
+  let emailValue;
+  let passValue;
+  let dispatch = createEventDispatcher();
+  let errorAuth;
+  let errorNo;
+  let errorMsg;
+  const auth = getAuth();
+  function createAcc() {
+    createUserWithEmailAndPassword(auth, emailValue, passValue)
+      .then(() => {
+        errorAuth = false;
+        dispatch("hideauthentication");
+      })
+      .catch((error) => {
+        errorNo = error.code;
+        errorMsg = error.message;
+        errorAuth = true;
+      });
+  }
+  function loginAcc() {
+    signInWithEmailAndPassword(auth, emailValue, passValue)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        errorAuth = false;
+        dispatch("hideauthentication");
+      })
+      .catch((error) => {
+        errorNo = error.code;
+        errorMsg = error.message;
+        errorAuth = true;
+      });
+  }
 </script>
 
 <div transition:fly class="fullscreen">
@@ -14,19 +50,30 @@
       dispatch("hideauthentication");
     }}
   >
+    {#if errorAuth} <div class="auth-failed">{errorNo}:{errorMsg}</div>{/if}
     {#if login}
       <h1 class="auth-header">Log In</h1>
     {:else}
       <h1 class="auth-header">Sign Up</h1>
     {/if}
     <p class="auth-text">Email:</p>
-    <input type="text" class="auth-input" placeholder="enter your email" />
+    <input
+      type="email"
+      class="auth-input"
+      bind:value={emailValue}
+      placeholder="enter your email"
+    />
     <p class="auth-text">Password:</p>
-    <input type="text" class="auth-input" placeholder="enter your password" />
+    <input
+      type="password"
+      class="auth-input"
+      bind:value={passValue}
+      placeholder="enter your password"
+    />
     {#if login}
-      <button class="auth-button">Log In</button>
+      <button class="auth-button" on:click={loginAcc}>Log In</button>
     {:else}
-      <button class="auth-button">Sign Up</button>
+      <button class="auth-button" on:click={createAcc}>Sign Up</button>
     {/if}
   </div>
 </div>
@@ -42,6 +89,13 @@
     align-items: center;
     justify-content: center;
     z-index: 1;
+  }
+  .auth-failed {
+    width: 100%;
+    background-color: red;
+    color: white;
+    text-decoration: underline;
+    font-size: 20px;
   }
   .auth-container {
     background-color: yellow;
