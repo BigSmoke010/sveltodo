@@ -145,4 +145,9 @@
     cursor: pointer;
     background-position: right;
   }
+  @media (max-width: 699px) {
+    .fullscreen {
+      left: -335px;
+    }
+  }
 </style>
