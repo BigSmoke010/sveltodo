@@ -3,12 +3,17 @@
   import Todos from "./list-todo.svelte";
   import Auth from "./auth.svelte";
   import { app } from "./firebaseinit.js";
+  import { onMount } from "svelte";
   let todo = "";
   let showauth = false;
   let login;
+  let ready = false;
   function add(event) {
     todo = event.detail.message;
   }
+  onMount(() => {
+    ready = true;
+  });
 </script>
 
 <title>Sveltodo</title>
@@ -23,15 +28,16 @@
       />
     </div>
   {/if}
-
-  <Main
-    on:addtodo={add}
-    on:showauthentication={(e) => {
-      showauth = true;
-      login = e.detail.message;
-    }}
-  />
-  <Todos bind:todo />
+  {#if ready}
+    <Main
+      on:addtodo={add}
+      on:showauthentication={(e) => {
+        showauth = true;
+        login = e.detail.message;
+      }}
+    />
+    <Todos bind:todo />
+  {/if}
 </div>
 
 <style>

@@ -33,21 +33,21 @@
     class:lightfc={$themeStore === true}
     class:darkfc={$themeStore === false}
   >
-    Todo
+    Sveltodo
   </h1>
   {#if !loggedIn}
     <div class="auth-container">
       <div
-        class="auth-btn"
+        class="auth-btn login-btn"
         on:click={() => {
           dispatch("showauthentication", { message: true });
         }}
       >
         Log in
       </div>
-      |
+
       <div
-        class="auth-btn"
+        class="auth-btn signout-btn"
         on:click={() => {
           dispatch("showauthentication", { message: false });
         }}
@@ -57,7 +57,7 @@
     </div>
   {:else}
     <div
-      class="auth-btn"
+      class="signout-btn auth-btn"
       on:click={() => {
         signOut(auth);
         location.reload(true);
@@ -66,13 +66,17 @@
       Sign Out
     </div>
   {/if}
-  <i class:lightfc={$themeStore === true} class:darkfc={$themeStore === false}
-    >Dark mode:</i
-  >
-  <label class="switch">
-    <input on:click={changetheme} checked={!$themeStore} type="checkbox" />
-    <span class="slider round" />
-  </label>
+  <div class="toggle-container">
+    <div class="container">
+      <div
+        on:click={changetheme}
+        class:active={$themeStore === false}
+        id="toggle"
+      >
+        <span class:change={$themeStore === false} class="indicator" />
+      </div>
+    </div>
+  </div>
   <h1
     class:lightfc={$themeStore === true}
     class:darkfc={$themeStore === false}
@@ -96,64 +100,52 @@
 <style>
   .title {
     font-size: 50px;
-  }
-  /* The switch - the box around the slider */
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 25px;
-  }
-
-  /* Hide default HTML checkbox */
-  .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-
-  /* The slider */
-  .slider {
     position: absolute;
-    cursor: pointer;
+    top: 100px;
+  }
+  .greet {
+    padding: 25px;
+  }
+  * {
+    padding: 0;
+    margin: 0;
+  }
+  .toggle-container {
+    position: absolute;
     top: 0;
-    left: 0;
-    right: 0;
-    border-radius: 20px;
-    bottom: 0;
-    background-color: #ccc;
-    -webkit-transition: 0.4s;
-    transition: 0.4s;
   }
-
-  .slider:before {
+  .container {
+    position: relative;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .container #toggle {
+    height: 20px;
+    width: 40px;
+    background-color: #bebebe;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.5s;
+  }
+  .container .active {
+    background-color: #353535 !important;
+  }
+  .container #toggle .indicator {
     position: absolute;
-    content: "";
-    height: 18px;
-    border-radius: 20px;
-
-    width: 26px;
+    height: 15px;
+    width: 15px;
+    top: 3px;
     left: 4px;
-    bottom: 4px;
-    background-color: white;
-    -webkit-transition: 0.4s;
-    transition: 0.4s;
+    background-color: #000;
+    border-radius: 50%;
+    transition: all 0.5s;
   }
-
-  input:checked + .slider {
-    background-color: #2196f3;
+  .container #toggle .change {
+    left: 22px;
+    background-color: #fff;
   }
-
-  input:focus + .slider {
-    box-shadow: 0 0 1px #2196f3;
-  }
-
-  input:checked + .slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
-  }
-
   .container-input {
     width: 200px;
     height: 25px;
@@ -196,11 +188,21 @@
   }
   .auth-btn {
     text-decoration: underline;
-    color: rgb(209, 209, 75);
+    color: rgb(124, 124, 59);
   }
   .auth-btn:hover {
     cursor: pointer;
     color: rgba(209, 209, 75, 0.5);
+  }
+  .signout-btn {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .login-btn {
+    position: absolute;
+    right: 10px;
+    top: 0;
   }
   .container-button:hover {
     background-position: right;
@@ -234,6 +236,9 @@
       height: 5px;
       bottom: 0;
       left: 0;
+    }
+    .title {
+      top: 0;
     }
     .main-container {
       width: 100vw;

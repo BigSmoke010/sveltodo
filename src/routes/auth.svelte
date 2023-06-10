@@ -98,7 +98,11 @@
     font-size: 20px;
   }
   .auth-container {
-    background-color: yellow;
+    background-image: linear-gradient(
+      to right,
+      rgb(160, 160, 22),
+      rgb(202, 221, 26)
+    );
     width: 300px;
     height: 400px;
     border-radius: 10px;
