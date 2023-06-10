@@ -91,6 +91,7 @@
       .then((querySnapshot) => {
         const documentsData = querySnapshot.docs.map((doc) => doc.data());
         todolist = documentsData;
+        console.log(todolist);
       })
       .catch((error) => {
         console.log("Error getting documents:", error);
@@ -251,14 +252,23 @@
           out:send={{ key: todo.id }}
           animate:flip
         >
-          <input
-            type="checkbox"
-            checked
-            class="checkbox"
-            on:change={() => mark(item, false)}
-            class:checkboxlight={$themeStore === true}
-            class:checkboxdark={$themeStore === false}
-          />
+          {#if userUID}
+            <input
+              type="checkbox"
+              class="checkbox"
+              checked
+              class:checkboxlight={$themeStore === true}
+              class:checkboxdark={$themeStore === false}
+              on:change={() => markdb(item, false)}
+            />
+          {:else}<input
+              type="checkbox"
+              class="checkbox"
+              checked
+              class:checkboxlight={$themeStore === true}
+              class:checkboxdark={$themeStore === false}
+              on:change={() => mark(item, false)}
+            />{/if}
           <div class="todo-desc done">{item.description}</div>
           <div
             class="dots-container"
