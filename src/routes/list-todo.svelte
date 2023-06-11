@@ -183,109 +183,113 @@
 </script>
 
 <div class="container">
-  <div
-    class="label"
-    class:lightfc={$themeStore === true}
-    class:darkfc={$themeStore === false}
-  >
-    things to do
-  </div>
-  <div class="main-container">
-    {#if todolist}
-      {#each todolist.filter((t) => !t.done) as item (item.id)}
-        <div
-          class:light={$themeStore === true}
-          class:dark={$themeStore === false}
-          class="todo-container"
-          in:receive={{ key: todo.id }}
-          out:send={{ key: todo.id }}
-          animate:flip
-        >
-          {#if userUID}
-            <input
-              type="checkbox"
-              class="checkbox"
-              class:checkboxlight={$themeStore === true}
-              class:checkboxdark={$themeStore === false}
-              on:change={() => markdb(item, true)}
-            />
-          {:else}<input
-              type="checkbox"
-              class="checkbox"
-              class:checkboxlight={$themeStore === true}
-              class:checkboxdark={$themeStore === false}
-              on:change={() => mark(item, true)}
-            />{/if}
-          <div class="todo-desc">{item.description}</div>
+  <div class="wrapper">
+    <div
+      class="label"
+      class:lightfc={$themeStore === true}
+      class:darkfc={$themeStore === false}
+    >
+      things to do
+    </div>
+    <div class="main-container">
+      {#if todolist}
+        {#each todolist.filter((t) => !t.done) as item (item.id)}
           <div
-            class="dots-container"
-            on:click={() => {
-              showContextMenu(event, item);
-            }}
+            class:light={$themeStore === true}
+            class:dark={$themeStore === false}
+            class="todo-container"
+            in:receive={{ key: todo.id }}
+            out:send={{ key: todo.id }}
+            animate:flip
           >
-            <img
-              src={Dots}
-              alt="more options"
-              class:lightsvg={$themeStore === true}
-              class:darksvg={$themeStore === false}
-            />
+            {#if userUID}
+              <input
+                type="checkbox"
+                class="checkbox"
+                class:checkboxlight={$themeStore === true}
+                class:checkboxdark={$themeStore === false}
+                on:change={() => markdb(item, true)}
+              />
+            {:else}<input
+                type="checkbox"
+                class="checkbox"
+                class:checkboxlight={$themeStore === true}
+                class:checkboxdark={$themeStore === false}
+                on:change={() => mark(item, true)}
+              />{/if}
+            <div class="todo-desc">{item.description}</div>
+            <div
+              class="dots-container"
+              on:click={() => {
+                showContextMenu(event, item);
+              }}
+            >
+              <img
+                src={Dots}
+                alt="more options"
+                class:lightsvg={$themeStore === true}
+                class:darksvg={$themeStore === false}
+              />
+            </div>
           </div>
-        </div>
-      {/each}
-    {/if}
+        {/each}
+      {/if}
+    </div>
   </div>
-  <div
-    class="label"
-    class:lightfc={$themeStore === true}
-    class:darkfc={$themeStore === false}
-  >
-    things done
-  </div>
-  <div class="main-container">
-    {#if todolist}
-      {#each todolist.filter((t) => t.done) as item (item.id)}
-        <div
-          class:light={$themeStore === true}
-          class:dark={$themeStore === false}
-          class="todo-container"
-          in:receive={{ key: todo.id }}
-          out:send={{ key: todo.id }}
-          animate:flip
-        >
-          {#if userUID}
-            <input
-              type="checkbox"
-              class="checkbox"
-              checked
-              class:checkboxlight={$themeStore === true}
-              class:checkboxdark={$themeStore === false}
-              on:change={() => markdb(item, false)}
-            />
-          {:else}<input
-              type="checkbox"
-              class="checkbox"
-              checked
-              class:checkboxlight={$themeStore === true}
-              class:checkboxdark={$themeStore === false}
-              on:change={() => mark(item, false)}
-            />{/if}
-          <div class="todo-desc done">{item.description}</div>
+  <div class="wrapper">
+    <div
+      class="label"
+      class:lightfc={$themeStore === true}
+      class:darkfc={$themeStore === false}
+    >
+      things done
+    </div>
+    <div class="main-container">
+      {#if todolist}
+        {#each todolist.filter((t) => t.done) as item (item.id)}
           <div
-            class="dots-container"
-            on:click={() => {
-              showContextMenu(event, item);
-            }}
+            class:light={$themeStore === true}
+            class:dark={$themeStore === false}
+            class="todo-container"
+            in:receive={{ key: todo.id }}
+            out:send={{ key: todo.id }}
+            animate:flip
           >
-            <img
-              src={Dots}
-              alt="more options"
-              class:lightsvg={$themeStore === true}
-              class:darksvg={$themeStore === false}
-            />
+            {#if userUID}
+              <input
+                type="checkbox"
+                class="checkbox"
+                checked
+                class:checkboxlight={$themeStore === true}
+                class:checkboxdark={$themeStore === false}
+                on:change={() => markdb(item, false)}
+              />
+            {:else}<input
+                type="checkbox"
+                class="checkbox"
+                checked
+                class:checkboxlight={$themeStore === true}
+                class:checkboxdark={$themeStore === false}
+                on:change={() => mark(item, false)}
+              />{/if}
+            <div class="todo-desc done">{item.description}</div>
+            <div
+              class="dots-container"
+              on:click={() => {
+                showContextMenu(event, item);
+              }}
+            >
+              <img
+                src={Dots}
+                alt="more options"
+                class:lightsvg={$themeStore === true}
+                class:darksvg={$themeStore === false}
+              />
+            </div>
           </div>
-        </div>
-      {/each}
-    {/if}
+        {/each}
+      {/if}
+    </div>
   </div>
 </div>
 {#if showContext}
@@ -321,23 +325,16 @@
 {/if}
 
 <style>
-  /* width */
   ::-webkit-scrollbar {
     width: 5px;
   }
-
-  /* Track */
   ::-webkit-scrollbar-track {
     background: black;
   }
-
-  /* Handle */
   ::-webkit-scrollbar-thumb {
     background: #bcd100;
     border-radius: 20px;
   }
-
-  /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
     background: #9fb10055;
   }
@@ -480,6 +477,15 @@
   @media (min-width: 1148px) {
     .container {
       flex-direction: row;
+    }
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .main-container {
+      height: auto;
     }
   }
   @media (max-width: 699px) {
