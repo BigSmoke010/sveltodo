@@ -183,14 +183,14 @@
 </script>
 
 <div class="container">
+  <div
+    class="label"
+    class:lightfc={$themeStore === true}
+    class:darkfc={$themeStore === false}
+  >
+    things to do
+  </div>
   <div class="main-container">
-    <div
-      class="label"
-      class:lightfc={$themeStore === true}
-      class:darkfc={$themeStore === false}
-    >
-      things to do
-    </div>
     {#if todolist}
       {#each todolist.filter((t) => !t.done) as item (item.id)}
         <div
@@ -234,14 +234,14 @@
       {/each}
     {/if}
   </div>
+  <div
+    class="label"
+    class:lightfc={$themeStore === true}
+    class:darkfc={$themeStore === false}
+  >
+    things done
+  </div>
   <div class="main-container">
-    <div
-      class="label"
-      class:lightfc={$themeStore === true}
-      class:darkfc={$themeStore === false}
-    >
-      things done
-    </div>
     {#if todolist}
       {#each todolist.filter((t) => t.done) as item (item.id)}
         <div
@@ -395,6 +395,7 @@
 
   .label {
     font-size: 25px;
+    text-align: center;
   }
   .done {
     text-decoration: line-through;
@@ -472,6 +473,9 @@
     .container {
       flex-direction: column;
     }
+    .main-container {
+      height: auto;
+    }
   }
   @media (min-width: 1148px) {
     .container {
@@ -480,10 +484,11 @@
   }
   @media (max-width: 699px) {
     .todo-container {
-      width: 100vw;
+      width: 440px;
     }
     .main-container {
-      height: auto;
+      max-height: 240px;
+      overflow-x: auto;
     }
   }
 </style>

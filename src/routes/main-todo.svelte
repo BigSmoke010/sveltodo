@@ -238,7 +238,7 @@
       left: 0;
     }
     .title {
-      top: 0;
+      top: 50px;
     }
     .main-container {
       width: 100vw;
