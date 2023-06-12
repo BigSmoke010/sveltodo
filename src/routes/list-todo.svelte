@@ -302,6 +302,8 @@
     use:clickOutside={() => {
       showContext = false;
     }}
+    class:light-context={$themeStore === true}
+    class:dark-context={$themeStore === false}
     style="position: absolute; left : {x}; top : {y}"
   >
     {#if userUID}
@@ -313,7 +315,11 @@
           alt="trash"
         />Delete</button
       >{:else}
-      <button class="context-it" on:click={() => deletetodo(selectedItem)}
+      <button
+        class="context-it"
+        class:darkfc={$themeStore === true}
+        class:lightfc={$themeStore === false}
+        on:click={() => deletetodo(selectedItem)}
         ><img
           class:lightsvg={$themeStore === true}
           class:darksvg={$themeStore === false}
@@ -360,7 +366,7 @@
     border-radius: 12px;
   }
   .context-menu {
-    background-color: rgb(234, 243, 157);
+    background-color: rgb(52, 53, 49);
     display: flex;
     flex-direction: column;
     z-index: 1;
@@ -368,6 +374,12 @@
     align-items: center;
     width: 80px;
     right: 0;
+  }
+  .light-context {
+    background-color: rgb(133, 133, 133);
+  }
+  .dark-context {
+    background-color: rgb(52, 53, 49);
   }
   .context-it {
     transition: all 0.25s;
