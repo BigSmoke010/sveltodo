@@ -32,6 +32,7 @@
   export let x;
   export let y;
   export let selectedItem;
+
   function markdb(item, done) {
     const q = query(
       collectionRef,

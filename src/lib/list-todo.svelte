@@ -1,5 +1,5 @@
 <script>
-  import { getStoreValue, todos, id, finalId, themeStore } from "./js/stores";
+  import { getStoreValue, todos, themeStore } from "./js/stores";
   import { slide } from "svelte/transition";
   import Trash from "./svgs/trash-can.svg";
   import { clickOutside } from "./js/clickoutside";
@@ -12,27 +12,41 @@
     query,
     where,
   } from "firebase/firestore";
+  import { onMount } from "svelte";
   import { getAuth } from "firebase/auth";
   import TodoCont from "./todos-container.svelte";
   let todolist;
   const db = getFirestore();
   const collectionRef = collection(db, "todos");
   const auth = getAuth();
-  let userUID;
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      userUID = user.uid;
-      fetchTodos(user);
-    } else {
-      todolist = getStoreValue;
-    }
+  let userUID,
+    uid,
+    previousValue = "",
+    idArray = [],
+    showContext = false,
+    selectedItem,
+    x,
+    y;
+  onMount(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        userUID = user.uid;
+        const q = query(collectionRef, where("userid", "==", userUID));
+        getDocs(q).then((querySnapshot) => {
+          const documentsData = querySnapshot.docs.map((doc) => doc.data());
+          idArray = documentsData.map((x) => {
+            return x.id;
+          });
+          uid = Math.max(...idArray) + 1;
+        });
+        fetchTodos(user);
+      } else {
+        todolist = getStoreValue;
+      }
+    });
   });
 
   export let todo = "";
-  let previousValue = "";
-  let uid = id;
-  let showContext = false;
-  let selectedItem, x, y;
 
   $: {
     if (todo !== previousValue) {
@@ -54,7 +68,6 @@
       done: false,
       description: todo,
     }).then(() => {
-      finalId.set(uid);
       fetchTodos();
     });
   }
@@ -76,7 +89,6 @@
       },
     ];
     todos.set(todolist);
-    finalId.set(uid);
   }
 
   function deletetodo(item) {
