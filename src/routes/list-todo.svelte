@@ -348,12 +348,9 @@
     flex-grow: 1;
     width: 500px;
     display: flex;
-    height: 100vh;
+    max-height: 90vh;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: auto;
   }
   .todo-container {
     display: flex;

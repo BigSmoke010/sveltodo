@@ -44,9 +44,6 @@
   @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
   * {
     font-family: Lato;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
   }
   .main-container {
     display: flex;
@@ -59,7 +56,9 @@
     top: 0;
   }
   :global(body) {
-    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
   @media (max-width: 699px) {
     .main-container {
