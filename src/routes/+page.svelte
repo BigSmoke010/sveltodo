@@ -1,8 +1,8 @@
 <script>
-  import Main from "./main-todo.svelte";
-  import Todos from "./list-todo.svelte";
-  import Auth from "./auth.svelte";
-  import { app } from "./firebaseinit.js";
+  import Main from "$lib/main-todo.svelte";
+  import Todos from "$lib/list-todo.svelte";
+  import Auth from "$lib/auth.svelte";
+  import { app } from "$lib/js/firebaseinit.js";
   import { onMount } from "svelte";
   let todo = "";
   let showauth = false;

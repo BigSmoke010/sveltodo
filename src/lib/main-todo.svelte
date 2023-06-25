@@ -1,6 +1,6 @@
 <script>
   import { createEventDispatcher, onMount } from "svelte";
-  import { theme, themeStore } from "./stores";
+  import { theme, themeStore } from "./js/stores";
   import { getAuth, signOut } from "firebase/auth";
 
   const auth = getAuth();

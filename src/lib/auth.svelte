@@ -6,7 +6,7 @@
   } from "firebase/auth";
   import { createEventDispatcher } from "svelte";
   import { fly } from "svelte/transition";
-  import { clickOutside } from "./clickoutside";
+  import { clickOutside } from "./js/clickoutside";
   export let login;
 
   let emailValue;
