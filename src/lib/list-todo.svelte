@@ -25,13 +25,13 @@
     idArray = [],
     showContext = false,
     selectedItem,
-    checkEmail = false,
     x,
     y;
   onMount(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
         if (user.emailVerified) {
+          console.log("logged in");
           userUID = user.uid;
           const q = query(collectionRef, where("userid", "==", userUID));
           getDocs(q).then((querySnapshot) => {
@@ -43,7 +43,7 @@
           });
           fetchTodos(user);
         } else {
-          checkEmail = true;
+          todolist = getStoreValue;
         }
       } else {
         todolist = getStoreValue;
@@ -57,8 +57,13 @@
     if (todo !== previousValue) {
       auth.onAuthStateChanged((user) => {
         if (user) {
-          addDivdb();
-          previousValue = todo;
+          if (user.emailVerified) {
+            addDivdb();
+            previousValue = todo;
+          } else {
+            addDiv();
+            previousValue = todo;
+          }
         } else {
           addDiv();
           previousValue = todo;

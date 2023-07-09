@@ -2,7 +2,7 @@
   import { createEventDispatcher, onMount } from "svelte";
   import { theme, themeStore } from "./js/stores";
   import { getAuth, signOut } from "firebase/auth";
-
+  import { toast } from "@zerodevx/svelte-toast";
   const auth = getAuth();
   let dispatch = createEventDispatcher();
   let loggedIn = false;
@@ -10,6 +10,8 @@
     if (user) {
       if (user.emailVerified) {
         loggedIn = true;
+      } else {
+        toast.push("It seems that Your email is unverified");
       }
     }
   });
@@ -100,6 +102,10 @@
 </div>
 
 <style>
+  * {
+    padding: 0;
+    margin: 0;
+  }
   .title {
     font-size: 50px;
     position: absolute;
@@ -107,10 +113,6 @@
   }
   .greet {
     padding: 25px;
-  }
-  * {
-    padding: 0;
-    margin: 0;
   }
   .toggle-container {
     position: absolute;

@@ -3,6 +3,8 @@
   import Todos from "$lib/list-todo.svelte";
   import Auth from "$lib/auth.svelte";
   import { app } from "$lib/js/firebaseinit.js";
+  import { SvelteToast } from "@zerodevx/svelte-toast";
+
   import { onMount } from "svelte";
   let todo = "";
   let showauth = false;
@@ -39,9 +41,17 @@
     <Todos bind:todo />
   {/if}
 </div>
+<div class="font-wrapper">
+  <SvelteToast />
+</div>
 
 <style>
   @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
+  :root {
+    --toastBackground: rgba(183, 194, 38, 0.95);
+    --toastColor: #424242;
+    --toastBarBackground: rgb(94, 110, 0);
+  }
   * {
     font-family: Lato;
   }
