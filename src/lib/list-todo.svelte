@@ -31,7 +31,6 @@
     auth.onAuthStateChanged((user) => {
       if (user) {
         if (user.emailVerified) {
-          console.log("logged in");
           userUID = user.uid;
           const q = query(collectionRef, where("userid", "==", userUID));
           getDocs(q).then((querySnapshot) => {
@@ -44,9 +43,18 @@
           fetchTodos(user);
         } else {
           todolist = getStoreValue;
+          idArray = todolist.map((x) => {
+            return x.id;
+          });
+          uid = Math.max(...idArray, 0) + 1;
         }
       } else {
         todolist = getStoreValue;
+        idArray = todolist.map((x) => {
+          return x.id;
+        });
+        uid = Math.max(...idArray, 0) + 1;
+        console.log(uid);
       }
     });
   });

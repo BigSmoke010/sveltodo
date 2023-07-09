@@ -22,7 +22,6 @@
     createUserWithEmailAndPassword(auth, emailValue, passValue)
       .then((userCredential) => {
         const user = userCredential.user;
-        // Send email verification
         sendEmailVerification(user).then(() => {
           errorAuth = false;
           emailSent = true;
@@ -38,8 +37,21 @@
     signInWithEmailAndPassword(auth, emailValue, passValue)
       .then((userCredential) => {
         const user = userCredential.user;
-        errorAuth = false;
-        dispatch("hideauthentication");
+        if (user.emailVerified) {
+          // User is logged in and their email is verified
+          errorAuth = false;
+          dispatch("hideauthentication");
+        } else {
+          // User is logged in but their email is not verified
+          // You can handle this case accordingly
+          errorNo = "unverified-email";
+          errorMsg = "Please verify your email before logging in.";
+          errorAuth = true;
+          sendEmailVerification(user).then(() => {
+            errorAuth = false;
+            emailSent = true;
+          });
+        }
       })
       .catch((error) => {
         errorNo = error.code;
