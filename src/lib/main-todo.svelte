@@ -8,7 +8,9 @@
   let loggedIn = false;
   auth.onAuthStateChanged((user) => {
     if (user) {
-      loggedIn = true;
+      if (user.emailVerified) {
+        loggedIn = true;
+      }
     }
   });
   export let todo = "";

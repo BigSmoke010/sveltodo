@@ -25,21 +25,26 @@
     idArray = [],
     showContext = false,
     selectedItem,
+    checkEmail = false,
     x,
     y;
   onMount(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        userUID = user.uid;
-        const q = query(collectionRef, where("userid", "==", userUID));
-        getDocs(q).then((querySnapshot) => {
-          const documentsData = querySnapshot.docs.map((doc) => doc.data());
-          idArray = documentsData.map((x) => {
-            return x.id;
+        if (user.emailVerified) {
+          userUID = user.uid;
+          const q = query(collectionRef, where("userid", "==", userUID));
+          getDocs(q).then((querySnapshot) => {
+            const documentsData = querySnapshot.docs.map((doc) => doc.data());
+            idArray = documentsData.map((x) => {
+              return x.id;
+            });
+            uid = Math.max(...idArray) + 1;
           });
-          uid = Math.max(...idArray) + 1;
-        });
-        fetchTodos(user);
+          fetchTodos(user);
+        } else {
+          checkEmail = true;
+        }
       } else {
         todolist = getStoreValue;
       }

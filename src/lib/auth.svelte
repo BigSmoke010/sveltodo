@@ -3,6 +3,7 @@
     getAuth,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
+    sendEmailVerification,
   } from "firebase/auth";
   import { createEventDispatcher } from "svelte";
   import { fly } from "svelte/transition";
@@ -15,12 +16,17 @@
   let errorAuth;
   let errorNo;
   let errorMsg;
+  let emailSent = false;
   const auth = getAuth();
   function createAcc() {
     createUserWithEmailAndPassword(auth, emailValue, passValue)
-      .then(() => {
-        errorAuth = false;
-        dispatch("hideauthentication");
+      .then((userCredential) => {
+        const user = userCredential.user;
+        // Send email verification
+        sendEmailVerification(user).then(() => {
+          errorAuth = false;
+          emailSent = true;
+        });
       })
       .catch((error) => {
         errorNo = error.code;
@@ -55,6 +61,9 @@
       <h1 class="auth-header">Log In</h1>
     {:else}
       <h1 class="auth-header">Sign Up</h1>
+    {/if}
+    {#if emailSent}
+      <div class="email-ver">Please click the Link sent to your email.</div>
     {/if}
     <p class="auth-text">Email:</p>
     <input
@@ -95,7 +104,7 @@
     background-color: red;
     color: white;
     text-decoration: underline;
-    font-size: 20px;
+    font-size: 18px;
   }
   .auth-container {
     background-image: linear-gradient(
@@ -148,6 +157,11 @@
   .auth-button:hover {
     cursor: pointer;
     background-position: right;
+  }
+  .email-ver {
+    background-color: rgba(121, 134, 0, 0.767);
+    width: 100%;
+    font-size: 18px;
   }
   @media (max-width: 699px) {
     .fullscreen {
